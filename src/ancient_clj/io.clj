@@ -1,8 +1,7 @@
 (ns ^{:doc "IO Helpers"
       :author "Yannick Scherer"}
   ancient-clj.io
-  (:require [ancient-clj.verbose :refer :all]
-            [clj-http.client :as client :only [get]]))
+  (:require [ancient-clj.verbose :refer :all]))
 
 (defn fetch-url!
   "Fetch the given URL using `slurp` or `clj-http.client/get`."
@@ -13,9 +12,7 @@
       (verbose msg "(with authentication)")
       (verbose msg))
     (try
-      (when-let [response (client/get url {:basic-auth [username password] :as :stream})]
-        (with-open [data-stream (:body response)]
-          (slurp data-stream)))
+      (slurp url)
       (catch Exception ex
         (let [{:keys [status] :as data} (:object (ex-data ex))]
           (condp = status
